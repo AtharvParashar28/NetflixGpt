@@ -1,25 +1,27 @@
-import Header from "./Header.jsx";
-import Login from "./Login.jsx";
 import bgImage from "../utils/pexels-pavel-danilyuk-7234386.jpg"
+import bgImage2 from "../utils/3d-rendering-cinema-movie-theater.jpg"
+import Auth from "./auth/Auth";
 
 const Body = () => {
 
-    return (
-        <>
-          <div className="relative w-full h-screen overflow-hidden">
-            {/* background Image */}
-            {/* <img src={bgImage} alt="background image" className="absolute top-0 left-0 w-full h-full object-cover brightness -50 -z-10" /> */}
+  return (
+    <>
+      <div className="relative w-full h-screen overflow-hidden">
+        {/* background Image */}
+        <img src={bgImage2} alt="background image" className="absolute top-0 left-0 object-cover z-0" />
 
-            {/* header and sign in form */}
-            <div className="relative z-10 text-white">
-                <Header />
-                <div className="mt-10">
-                    <Login />
-                </div>
-            </div>
-          </div>
-        </>
-    )
+        {/* Dark Overlay */}
+        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-0"></div>
+
+        {/* All the content must written below img in the second div otherwise it will get hide behind the image */}
+
+        {/* header and sign in form */}
+        <div className="relative z-10 text-white">
+         <Auth />
+        </div>
+      </div>
+    </>
+  )
 }
 
 export default Body;
