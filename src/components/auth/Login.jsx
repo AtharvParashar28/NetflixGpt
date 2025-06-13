@@ -3,14 +3,23 @@ import { Link } from "react-router-dom";
 import { EmailRegex, PasswordRegex } from "./validation";
 import { auth } from "../../firebase"
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../../utils/userSlice";
 
 const Login = ({ SwitchtoSignup }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    // Navigation
+    const Navigate = useNavigate();
+
     // Handling error for invalid input value
     const [emailError, setEmailError] = useState(true);
     const [passwordError, setPasswordError] = useState(true);
+
+    // Dispatch
+    const dispatch = useDispatch();
 
     // Sign-in
     const HandleSignin = () => {
@@ -20,15 +29,16 @@ const Login = ({ SwitchtoSignup }) => {
                     // Signed in 
                     const user = userCredential.user;
                     console.log(user);
+                    Navigate('/browse');
                 })
                 .catch((error) => {
+                    // Error
                     const errorCode = error.code;
                     const errorMessage = error.message;
                     console.log(errorCode, errorMessage)
                     alert("could not sign you in");
                 });
         }
-
     }
 
 
@@ -64,12 +74,6 @@ const Login = ({ SwitchtoSignup }) => {
                     <p className="text-red-500 font-semibold">Invalid Error</p>
                 }
 
-                {/* {!emailError ?
-                    <p className="text-red-500">Invalid email ❌</p>
-                    :
-                    <p className="text-green-500">Valid email ✅</p>
-                } */}
-
                 <br />
 
                 <label className="font-bold mb-2">Password </label>
@@ -92,7 +96,7 @@ const Login = ({ SwitchtoSignup }) => {
                 <p className="text-red-500 font-semibold">{(!passwordError) ? "Password must be at least 8 characters and include both uppercase and lowercase letters" : ""}</p>
                 <button
                     type="submit"
-                    className="mt-10 cursor-pointer bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200"
+                    className="mt-10 cursor-pointer bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200 "
                     onClick={HandleSignin}
                 >Log in</button>
             </form>

@@ -1,6 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App.jsx";
 import Browse from '../components/Browse.jsx'
+import { Provider } from "react-redux";
+import appStore from "../utils/appStore.js";
 
 const router = createBrowserRouter([
     {
@@ -9,7 +11,9 @@ const router = createBrowserRouter([
     },
     {
         path:"/browse",
-        element:<Browse />
+        element:
+        <Provider store={appStore}><Browse /></Provider>
+
     },
 ])
 

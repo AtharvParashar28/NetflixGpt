@@ -65,11 +65,6 @@ const Signup = ({ SwitchtoLogin }) => {
                     <p className="text-red-500 font-semibold">Invalid email</p>
                 }
 
-                {/* check on it later */}
-                {/* {!emailError && 
-                <p className="text-red-500">Invalid email</p>
-                } */}
-
                 <br />
 
                 <label className="font-bold mb-2">Full name </label>
@@ -85,12 +80,12 @@ const Signup = ({ SwitchtoLogin }) => {
                     value={fullname}
                     onChange={(e) => {
                         setFullname(e.target.value)
-                        setFullnameError(FullNameRegex(fullname))
+                        setFullnameError(FullNameRegex.test(fullname))
                     }}
                     required
                 />
                 {!fullnameError &&
-                    <p>Enter a valid name</p>
+                    <p className="text-red-500 font-semibold">Enter a valid name</p>
                 }
 
                 <br />
