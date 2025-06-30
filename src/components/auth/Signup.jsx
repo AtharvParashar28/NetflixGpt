@@ -10,17 +10,19 @@ const Signup = ({ SwitchtoLogin }) => {
     const [fullname, setFullname] = useState('');
 
     // Handling error for invalid input value
-    const [emailError, setEmailError] = useState(true);
-    const [passwordError, setPasswordError] = useState(true);
-    const [fullnameError, setFullnameError] = useState(true);
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const [fullnameError, setFullnameError] = useState(false);
 
-    const HandleSignUp = () => {
-        console.log(emailError, passwordError, fullnameError)
-        if (emailError && passwordError && fullnameError) {
+    const HandleSignUp = (e) => {
+        e.preventDefault();
+        if ((!emailError && !passwordError && !fullnameError)
+             && (email.length !== 0 && password.length !== 0 && fullname.length !== 0)) 
+            {
             console.log(email, password)
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Signed up 
+                    // Signed up  
                     const user = userCredential.user;
                     console.log(user);
                 })
@@ -39,9 +41,6 @@ const Signup = ({ SwitchtoLogin }) => {
 
             {/* Sing up form */}
             <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                }}
                 className="flex flex-col gap-2 items-center w-8/12 bg-white/10 pt-5 pb-10 backdrop-blur-md mt-15 bg-white bg-opacity-90 backdrop-blur-sm shadow-2xl rounded-xl">
 
                 <label className="font-bold mb-2">Email address</label>
@@ -57,11 +56,11 @@ const Signup = ({ SwitchtoLogin }) => {
                     value={email}
                     onChange={(e) => {
                         setEmail(e.target.value)
-                        setEmailError(EmailRegex.test(email));
+                        setEmailError(!EmailRegex.test(email));
                     }}
                     required
                 />
-                {!emailError &&
+                {emailError &&
                     <p className="text-red-500 font-semibold">Invalid email</p>
                 }
 
@@ -80,11 +79,11 @@ const Signup = ({ SwitchtoLogin }) => {
                     value={fullname}
                     onChange={(e) => {
                         setFullname(e.target.value)
-                        setFullnameError(FullNameRegex.test(fullname))
+                        setFullnameError(!FullNameRegex.test(fullname))
                     }}
                     required
                 />
-                {!fullnameError &&
+                {fullnameError &&
                     <p className="text-red-500 font-semibold">Enter a valid name</p>
                 }
 
@@ -103,12 +102,12 @@ const Signup = ({ SwitchtoLogin }) => {
                     value={password}
                     onChange={(e) => {
                         setPassword(e.target.value);
-                        setPasswordError(PasswordRegex.test(password))
+                        setPasswordError(!PasswordRegex.test(password))
                     }}
                     required
                 />
 
-                <p className="text-red-500 font-semibold">{(!passwordError) ? "Password must be at least 8 characters and include both uppercase and lowercase letters" : ""}</p>
+                <p className="text-red-500 font-semibold">{(passwordError) ? "Password must be at least 8 characters and include both uppercase and lowercase letters" : ""}</p>
 
 
                 <Link
@@ -136,6 +135,7 @@ abc123 → Too short, no uppercase
                     type="submit"
                     className="mt-10 cursor-pointer bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200"
                     onClick={HandleSignUp}
+                    disabled={emailError && fullnameError && passwordError}
                 >Sign Up</button>
             </form>
             <Link onClick={SwitchtoLogin} className="hover:underline cursor-pointer">Already have an account</Link>

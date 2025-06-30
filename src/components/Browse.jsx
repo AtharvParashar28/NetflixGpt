@@ -1,41 +1,34 @@
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import Header from "./Header";
+import useNowplaying from "../hooks/useNowplaying"
+import useUpcomingMovies from "../hooks/useUpcomingMovies"
+import useTopratedMovies from "../hooks/useTopratedMovies"
+import VideoPlayback from "./VideoPlayback";
 import { useSelector } from "react-redux";
-import appStore from "../utils/appStore";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { removeUser } from "../utils/userSlice";
+import BingMovies from "./BingMovies";
+import usePopularMovies from "../hooks/usePopularMovies";
 
 const Browse = () => {
-    // Navigation to other route
-    const Navigate = useNavigate();
 
-    // Subscribing to the store
-    const Store = useSelector((state) => state.user);
+    // Fetching Now plyaing data from TMDB API
+    useNowplaying();
 
-    // Dispatching an action
-    const dispatch = useDispatch();
+     // Fetching popular movie data from TMDB API
+    usePopularMovies();
 
-    const HandleSignout = () => {
-        signOut(auth).then(() => {
-            // Sign-out successfully
-            Navigate("/");
-            alert("Successfully signed out");
-        }).catch((error) => {
-            // An error happened.
-            alert("Error while sign you out");
-        });
-    }
+    // Fetching Top rated movie data from TMDB API
+    useTopratedMovies();
 
-    useEffect(() => {
-        console.log(Store);
-    },[])
+     // Fetching upcoming movie data from TMDB API
+    useUpcomingMovies();
+
+    // subscribing to the store
+    const NowPlayingmovieData = useSelector((store) => store.movies.nowPlayingMovies)
 
     return (
         <>
-            <h1 className="text-4xl text-blue-500">Browsing page</h1>
-            <button onClick={HandleSignout} className="cursor-pointer">Sign out</button>
+            <Header />
+            <VideoPlayback MovieID={NowPlayingmovieData?.results?.[0]?.id} Title={NowPlayingmovieData?.results?.[0]?.original_title} Overview={NowPlayingmovieData?.results?.[0]?.overview}/>
+            <BingMovies />
         </>
     )
 }

@@ -4,10 +4,12 @@ import { EmailRegex, PasswordRegex } from "./validation";
 import { auth } from "../../firebase"
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addUser } from "../../utils/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = ({ SwitchtoSignup }) => {
+    // testing redux store
+    const store = useSelector((state) => state.user);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -15,21 +17,22 @@ const Login = ({ SwitchtoSignup }) => {
     const Navigate = useNavigate();
 
     // Handling error for invalid input value
-    const [emailError, setEmailError] = useState(true);
-    const [passwordError, setPasswordError] = useState(true);
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
 
     // Dispatch
     const dispatch = useDispatch();
 
     // Sign-in
-    const HandleSignin = () => {
-        if (emailError && passwordError) {
+    const HandleSignin = (e) => {
+        e.preventDefault();
+        if ((!emailError && !passwordError) && (email.length !== 0 && password.length !== 0)) {
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     // Signed in 
                     const user = userCredential.user;
                     console.log(user);
-                    Navigate('/browse');
+                    // Navigate('/browse');
                 })
                 .catch((error) => {
                     // Error
@@ -48,9 +51,6 @@ const Login = ({ SwitchtoSignup }) => {
 
             {/* Login form */}
             <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                }}
                 className="flex flex-col gap-5 items-center w-8/12 bg-white/10 pt-5 pb-10 backdrop-blur-md mt-15 bg-white bg-opacity-90 backdrop-blur-sm shadow-2xl rounded-xl">
 
                 <label className="font-bold mb-2 mt-5">Email Address </label>
@@ -66,11 +66,11 @@ const Login = ({ SwitchtoSignup }) => {
                     value={email}
                     onChange={(e) => {
                         setEmail(e.target.value)
-                        setEmailError(EmailRegex.test(email));
+                        setEmailError(!EmailRegex.test(email));
                     }}
                     required
                 />
-                {!emailError &&
+                {emailError &&
                     <p className="text-red-500 font-semibold">Invalid Error</p>
                 }
 
@@ -89,11 +89,12 @@ const Login = ({ SwitchtoSignup }) => {
                     value={password}
                     onChange={(e) => {
                         setPassword(e.target.value);
-                        setPasswordError(PasswordRegex.test(password))
+                        setPasswordError(!PasswordRegex.test(password));
                     }}
                     required
                 />
-                <p className="text-red-500 font-semibold">{(!passwordError) ? "Password must be at least 8 characters and include both uppercase and lowercase letters" : ""}</p>
+                <p className="text-red-500 font-semibold">{(passwordError) ? "Password must be at least 8 characters and include both uppercase and lowercase letters" : ""}</p>
+
                 <button
                     type="submit"
                     className="mt-10 cursor-pointer bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200 "
